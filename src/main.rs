@@ -1,7 +1,9 @@
 extern crate clap;
+extern crate colored;
 
-use std::io::{self, BufRead, Error};
+use std::io::{self, BufRead};
 use clap::{Arg, App};
+use colored::*;
 
 fn main() {
     let matches = App::new("rgrep")
@@ -20,23 +22,20 @@ fn main() {
     let mut x = 1;
     for line in stdin.lock().lines() {
         let to_search = line.unwrap();
-        let result = search_in_line(&to_search, text);
-        match result {
-            Ok(true) => println!("{}:{}", x, to_search),
-            Ok(false) => (),
-            Err(_) => println!("fatal error")
+        let is_found = search_in_line(&to_search, text);
+        match is_found {
+            true => print_found_line(&x, &to_search, text),
+            false => ()
         }
         x = x + 1;
     }
-
-    println!("{}", text);
 }
 
-fn search_in_line(line: &String, to_find: &str) -> Result<bool, Error> {
-    let v: Vec<_> = line.match_indices(to_find).collect();
-    if v.len() > 0 {
-        return Ok(true);
-    } else {
-        return Ok(false);
-    }
+fn search_in_line(line: &String, to_find: &str) -> bool {
+    return line.contains(to_find);
+}
+
+fn print_found_line(x: &i32, line: &str, found: &str) {
+    let line_to_print = line.replace(found, &found.red().to_string());
+    println!("[{}] {}", x.to_string().blue(), line_to_print);
 }
