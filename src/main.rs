@@ -39,3 +39,29 @@ fn print_found_line(x: &i32, line: &str, found: &str) {
     let line_to_print = line.replace(found, &found.red().to_string());
     println!("[{}] {}", x.to_string().blue(), line_to_print);
 }
+
+#[cfg(test)]
+mod tests {
+
+    use search_in_line;
+
+    #[test]
+    fn test_search_in_line_found() {
+        let line = "test found data".to_string();
+        let to_found = "found";
+
+        let is_found = search_in_line(&line, to_found);
+
+        assert_eq!(is_found, true);
+    }
+
+    #[test]
+    fn test_search_in_line_not_found() {
+        let line = "test found data".to_string();
+        let to_found = "not";
+
+        let is_found = search_in_line(&line, to_found);
+
+        assert_eq!(is_found, false);
+    }
+}
